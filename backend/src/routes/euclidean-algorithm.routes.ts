@@ -1,29 +1,40 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 
 import { EuclideanAlgorithm } from "../lib/EuclideanAlgorithm";
 
+interface BodyRequest {
+    firstNumber: number;
+    secondNumber: number;
+}
+
+type CustomRequest = Request<{}, {}, BodyRequest>;
+
 const euclideanAlgorithmRouter = Router();
 
-euclideanAlgorithmRouter.get("/euclidean", (request, response) => {
-    try {
-        const euclideanAlgorithm = new EuclideanAlgorithm();
+euclideanAlgorithmRouter.get(
+    "/euclidean",
+    (request: CustomRequest, response: Response) => {
+        try {
+            const bodyRequest = request.body;
 
-        const respostas = [
-            euclideanAlgorithm.calculate(1234, 54),
-            euclideanAlgorithm.calculate(14, 35),
-            euclideanAlgorithm.calculate(252, 180),
-            euclideanAlgorithm.calculate(6643, 2873),
-            euclideanAlgorithm.calculate(272828282, 3242),
-            euclideanAlgorithm.calculate(35, 14),
-            euclideanAlgorithm.calculate(42, 7),
-            euclideanAlgorithm.calculate(7, 42),
-            euclideanAlgorithm.calculate(10, 10),
-        ];
+            if (!bodyRequest.firstNumber || !bodyRequest.secondNumber) {
+                throw new Error(
+                    "Parameter(s) 'firstNumber' or 'secondNumber' not found"
+                );
+            }
 
-        return response.json({ responses: respostas });
-    } catch (err) {
-        return response.status(400).json({ error: (err as any).message });
+            const euclideanAlgorithm = new EuclideanAlgorithm();
+
+            const result = euclideanAlgorithm.calculate(
+                bodyRequest.firstNumber,
+                bodyRequest.secondNumber
+            );
+
+            return response.json({ greatestCommonDivisor: result });
+        } catch (err) {
+            return response.status(400).json({ error: (err as any).message });
+        }
     }
-});
+);
 
 export { euclideanAlgorithmRouter };

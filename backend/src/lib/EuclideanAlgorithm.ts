@@ -26,13 +26,7 @@ class EuclideanAlgorithm {
                 window.secondField = rest;
             }
 
-            return {
-                params: {
-                    a: firstNumber,
-                    b: secondNumber,
-                },
-                mdc: window.firstField,
-            };
+            return window.firstField;
         } catch (error) {
             throw new Error((error as any).message);
         }
