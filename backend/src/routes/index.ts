@@ -4,12 +4,18 @@ import { euclideanAlgorithmRouter } from "./euclidean-algorithm.routes";
 import { extendedEuclideanAlgorithmRouter } from "./extended-euclidean-algorithm.routes";
 import { factorizationAlgorithmRouter } from "./factorization-algorithm.routes";
 import { fermatAlgorithmRouter } from "./fermat-algorithm.routes";
+import { eratosthenesSieveAlgorithmRouter } from "./eratosthenes-sieve-algorithm.routes";
 
-const routes = Router();
+const router = Router();
 
-routes.use("/algorithm", euclideanAlgorithmRouter);
-routes.use("/algorithm", extendedEuclideanAlgorithmRouter);
-routes.use("/algorithm", factorizationAlgorithmRouter);
-routes.use("/algorithm", fermatAlgorithmRouter);
+const routes = [
+    euclideanAlgorithmRouter,
+    extendedEuclideanAlgorithmRouter,
+    factorizationAlgorithmRouter,
+    fermatAlgorithmRouter,
+    eratosthenesSieveAlgorithmRouter,
+];
 
-export { routes };
+router.use("/algorithm", ...routes);
+
+export { router };
