@@ -1,36 +1,25 @@
-type IReturn = any[];
-
-class EratosthenesSieveAlgorithm {
-    constructor() {}
-
-    calculate(number: number): IReturn {
+export class EratosthenesSieveAlgorithm {
+    calculate(number: number): any[] {
         try {
             if (number % 2 === 0) number -= 1;
 
-            // Etapa 1
             const arraySize = (number + 1) / 2;
             const values: boolean[] = new Array(arraySize).fill(true);
             let p = 3;
 
             while (true) {
-                // Etapa 2
                 if (Math.pow(p, 2) > number) {
                     break;
                 }
 
-                // Etapa 3
                 if (!values[(p - 1) / 2]) {
                     p += 2;
                     continue;
                 }
 
-                // Etapa 4
-
-                // Instrução 1
                 let t = Math.pow(p, 2);
 
                 while (true) {
-                    // Instrução 2
                     values[(t - 1) / 2] = false;
                     t += 2 * p;
 
@@ -57,5 +46,3 @@ class EratosthenesSieveAlgorithm {
         }
     }
 }
-
-export { EratosthenesSieveAlgorithm };

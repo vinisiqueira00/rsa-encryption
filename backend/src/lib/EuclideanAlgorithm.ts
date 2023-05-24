@@ -1,6 +1,4 @@
-class EuclideanAlgorithm {
-    constructor() {}
-
+export class EuclideanAlgorithm {
     calculate(firstNumber: number, secondNumber: number) {
         try {
             if (
@@ -32,5 +30,3 @@ class EuclideanAlgorithm {
         }
     }
 }
-
-export { EuclideanAlgorithm };

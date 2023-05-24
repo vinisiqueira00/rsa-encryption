@@ -1,8 +1,4 @@
-type IReturn = number;
-
-class ModularArithmeticAlgorithm {
-    constructor() {}
-
+export class ModularArithmeticAlgorithm {
     searchNumberIndex(values: number[][], number: number) {
         let counter = 0;
         for (const value of values) {
@@ -18,7 +14,7 @@ class ModularArithmeticAlgorithm {
         return counter;
     }
 
-    calculate(moduleNumber: number, number: number): IReturn {
+    calculate(moduleNumber: number, number: number): number {
         try {
             if (!Number.isInteger(moduleNumber)) {
                 throw new Error("Non-integer module number");
@@ -69,5 +65,3 @@ class ModularArithmeticAlgorithm {
         }
     }
 }
-
-export { ModularArithmeticAlgorithm };

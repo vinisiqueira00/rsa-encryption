@@ -4,23 +4,19 @@ import { FactorizationAlgorithm } from "../lib/FactorizationAlgorithm";
 import { FermatAlgorithm } from "../lib/FermatAlgorithm";
 import { ModularPotentialArithmeticAlgorithm } from "../lib/ModularPotentialArithmeticAlgorithm";
 
-type IReturn = any[];
-
-class Encode {
-    calculateFi(n: number) {
+export class Encryption {
+    calculatePhi(n: number) {
         const fermatAlgorithm = new FermatAlgorithm();
-        const factors = fermatAlgorithm.calculate(n);
+        const [firstFactor, secondFactor] = fermatAlgorithm.calculate(n);
 
-        const fi = (factors[0] - 1) * (factors[1] -1);
-
-        return fi;
+        return (firstFactor - 1) * (secondFactor - 1);
     }
 
     calculateE(n: number) {
-        const fi = this.calculateFi(n);
+        const phi = this.calculatePhi(n);
 
         const factorizationAlgorithm = new FactorizationAlgorithm();
-        const fiFactored = factorizationAlgorithm.calculate(fi).map(fiFactor => fiFactor.factor);
+        const phiFactored = factorizationAlgorithm.calculate(phi).map(phiFactor => phiFactor.factor);
 
         const eratosthenesSieveAlgorithm = new EratosthenesSieveAlgorithm();
         const eratosthenesList = eratosthenesSieveAlgorithm.calculate(n);
@@ -28,9 +24,9 @@ class Encode {
         let e = 0;
 
         eratosthenesList.forEach((eratosthenesValue) => {
-            const hasInFiFactored = fiFactored.indexOf(eratosthenesValue);
+            const hasInPhiFactored = phiFactored.indexOf(eratosthenesValue);
 
-            if (e === 0 && hasInFiFactored === -1) {
+            if (e === 0 && hasInPhiFactored === -1) {
                 e = eratosthenesValue;
             }
         })
@@ -38,14 +34,13 @@ class Encode {
         return e;
     }
 
-    calculateBlocks(n: number, text: string ) {
+    encode(n: number, text: string ) {
+        const e = this.calculateE(n)
+
         const breakMessageIntoBlocks = new BreakMessageIntoBlocks();
-        const message = breakMessageIntoBlocks.textToMessage(text);
-        const blocks = breakMessageIntoBlocks.encode(message, n);
+        const blocks = breakMessageIntoBlocks.encode(text, n);
 
         const modularPotentialArithmetic = new ModularPotentialArithmeticAlgorithm()
-
-        const e = this.calculateE(n)
 
         const encodedBlocks = blocks.map(block => {
             const blockEncoded = modularPotentialArithmetic.calculate(block, e, n)
@@ -57,13 +52,5 @@ class Encode {
 
         return encodedBlocks
     }
-
-    encode(n: number, text: string) {
-        const encodedBlocks = this.calculateBlocks(n, text);
-
-        return [...encodedBlocks];
-    }
 }
-
-export { Encode };
 

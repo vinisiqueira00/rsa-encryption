@@ -11,9 +11,7 @@ interface IReturn {
     beta: number;
 }
 
-class ExtendedEuclideanAlgorithm {
-    constructor() {}
-
+export class ExtendedEuclideanAlgorithm {
     calculate(firstNumber: number, secondNumber: number): IReturn {
         try {
             if (
@@ -86,5 +84,3 @@ class ExtendedEuclideanAlgorithm {
         }
     }
 }
-
-export { ExtendedEuclideanAlgorithm };

@@ -3,10 +3,8 @@ interface IValue {
     multiplicity: number;
 }
 
-class FactorizationAlgorithm {
+export class FactorizationAlgorithm {
     private initialFactor = 2;
-
-    constructor() {}
 
     countRepetitions(list: Array<number>, number: number) {
         let count = 0;
@@ -64,5 +62,3 @@ class FactorizationAlgorithm {
         }
     }
 }
-
-export { FactorizationAlgorithm };

@@ -1,7 +1,5 @@
-class Helpers {
-    constructor() {}
-
-    charToInt(character: string) {
+export abstract class Helpers {
+    static charToInt(character: string) {
         try {
             if (character.length !== 1) throw new Error("Non-char parameter");
 
@@ -11,7 +9,7 @@ class Helpers {
         }
     }
 
-    intToChar(integer: number) {
+    static intToChar(integer: number) {
         try {
             if (integer < 0 || integer > 9) {
                 throw new Error("Non-integer parameter");
@@ -23,7 +21,7 @@ class Helpers {
         }
     }
 
-    stringToInt(string: string) {
+    static stringToInt(string: string) {
         try {
             if (!/\d+/.test(string)) {
                 throw new Error("Parameter not be contain only number");
@@ -35,7 +33,7 @@ class Helpers {
         }
     }
 
-    intToString(integer: number) {
+    static intToString(integer: number) {
         try {
             return integer.toString();
         } catch (erro) {
@@ -43,7 +41,7 @@ class Helpers {
         }
     }
 
-    charToCode(character: string) {
+    static charToCode(character: string) {
         try {
             return character.charCodeAt(0) + 100;
         } catch (erro) {
@@ -51,7 +49,7 @@ class Helpers {
         }
     }
 
-    codeToChar(code: number) {
+    static codeToChar(code: number) {
         try {
             return String.fromCharCode(code - 100);
         } catch (erro) {
@@ -59,5 +57,3 @@ class Helpers {
         }
     }
 }
-
-export { Helpers };

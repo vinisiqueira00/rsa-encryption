@@ -1,27 +1,13 @@
-import { Helpers } from "../helpers/global";
+import { Helpers } from "../helpers/Helpers";
 
 type ObjectValidation = {
     value: number;
     isValid: boolean;
 };
 
-class BreakMessageIntoBlocks {
-    constructor() {}
-
+export class BreakMessageIntoBlocks {
     textToMessage(text: string) {
-        const textSplited = text.split("");
-
-        const helpers = new Helpers();
-
-        const messageArray = textSplited.map((textChar) => {
-            const charResult = helpers.charToCode(textChar);
-
-            return charResult;
-        });
-
-        const message = messageArray.join("");
-
-        return message;
+        return text.split("").map((textChar) => Helpers.charToCode(textChar)).join("");
     }
 
     buildBlock(message: string, n: number) {
@@ -100,8 +86,10 @@ class BreakMessageIntoBlocks {
         return response;
     }
 
-    encode(message: string, n: number) {
+    encode(text: string, n: number) {
         try {
+            const message = this.textToMessage(text);
+
             const blocks = [];
             let newMessage = message;
 
@@ -120,5 +108,3 @@ class BreakMessageIntoBlocks {
         }
     }
 }
-
-export { BreakMessageIntoBlocks };

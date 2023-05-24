@@ -1,10 +1,6 @@
 import { ModularArithmeticAlgorithm } from "./ModularArithmeticAlgorithm";
 
-type IReturn = number;
-
-class ModularPotentialArithmeticAlgorithm {
-    constructor() {}
-
+export class ModularPotentialArithmeticAlgorithm {
     getLastInsertInTheValues(values: number[][]) {
         let idxMoreElements = 0;
         for (let index = 0; index < values.length; index++) {
@@ -22,7 +18,7 @@ class ModularPotentialArithmeticAlgorithm {
         baseNumber: number,
         exponentNumber: number,
         moduleNumber: number
-    ): IReturn {
+    ): number {
         try {
             if (
                 !Number.isInteger(baseNumber) ||
@@ -56,22 +52,22 @@ class ModularPotentialArithmeticAlgorithm {
                     const idxLastArray = values.length - 1;
                     const currentPostElement = values[index].length - 1;
 
-                    const resultFormated = modularArithmeticAlgorithm.calculate(
+                    const resultFormatted = modularArithmeticAlgorithm.calculate(
                         moduleNumber,
                         values[0][0] * values[idxLastArray][currentPostElement]
                     );
 
-                    values[index].push(resultFormated);
+                    values[index].push(resultFormatted);
                 } else {
                     const previousArray = index - 1;
                     const currentPostElement = values[index].length;
 
-                    const resultFormated = modularArithmeticAlgorithm.calculate(
+                    const resultFormatted = modularArithmeticAlgorithm.calculate(
                         moduleNumber,
                         values[0][0] * values[previousArray][currentPostElement]
                     );
 
-                    values[index].push(resultFormated);
+                    values[index].push(resultFormatted);
                 }
 
                 counter++;
@@ -89,5 +85,3 @@ class ModularPotentialArithmeticAlgorithm {
         }
     }
 }
-
-export { ModularPotentialArithmeticAlgorithm };

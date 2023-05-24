@@ -1,9 +1,5 @@
-type IReturn = [number, number];
-
-class FermatAlgorithm {
-    constructor() {}
-
-    calculate(number: number): IReturn {
+export class FermatAlgorithm {
+    calculate(number: number): [number, number] {
         try {
             if (!Number.isInteger(number)) {
                 throw new Error("Non-integer parameter");
@@ -37,5 +33,3 @@ class FermatAlgorithm {
         }
     }
 }
-
-export { FermatAlgorithm };
