@@ -56,12 +56,6 @@ class ModularPotentialArithmeticAlgorithm {
                     const idxLastArray = values.length - 1;
                     const currentPostElement = values[index].length - 1;
 
-                    console.log(
-                        idxLastArray,
-                        currentPostElement,
-                        values[idxLastArray][currentPostElement]
-                    );
-
                     const resultFormated = modularArithmeticAlgorithm.calculate(
                         moduleNumber,
                         values[0][0] * values[idxLastArray][currentPostElement]
@@ -71,12 +65,6 @@ class ModularPotentialArithmeticAlgorithm {
                 } else {
                     const previousArray = index - 1;
                     const currentPostElement = values[index].length;
-
-                    console.log(
-                        previousArray,
-                        currentPostElement,
-                        values[previousArray][currentPostElement]
-                    );
 
                     const resultFormated = modularArithmeticAlgorithm.calculate(
                         moduleNumber,
