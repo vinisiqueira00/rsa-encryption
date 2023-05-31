@@ -1,19 +1,12 @@
 import { ModularArithmeticAlgorithm } from "./ModularArithmeticAlgorithm";
 
+enum ReasonsBreakLooping {
+    EXPOENT_ACHIEVED="EXPOENT ACHIEVED",
+    ZERO_FOUND="ZERO FOUND",
+    ONE_FOUND="ONE FOUND",
+}
+
 export class ModularPotentialArithmeticAlgorithm {
-    getLastInsertInTheValues(values: number[][]) {
-        let idxMoreElements = 0;
-        for (let index = 0; index < values.length; index++) {
-            const element = values[index];
-
-            if (element.length >= values[idxMoreElements].length) {
-                idxMoreElements = index;
-            }
-        }
-
-        return values[idxMoreElements][values[idxMoreElements].length - 1];
-    }
-
     calculate(
         baseNumber: number,
         exponentNumber: number,
@@ -25,61 +18,49 @@ export class ModularPotentialArithmeticAlgorithm {
                 !Number.isInteger(exponentNumber) ||
                 !Number.isInteger(moduleNumber)
             ) {
-                throw new Error("Non-integer module number");
+                throw new Error("Non-integer module number")
             }
 
-            const modularArithmeticAlgorithm = new ModularArithmeticAlgorithm();
+            const modularArithmeticAlgorithm = new ModularArithmeticAlgorithm()
 
-            const values: number[][] = [];
+            const loopingValues: number[] = [1]
 
-            for (let index = 0; index < moduleNumber; index++) {
-                values[index] = [];
-            }
+            let reasonBreak: ReasonsBreakLooping = ReasonsBreakLooping.EXPOENT_ACHIEVED
+            let counter = 1
 
-            let counter = 1;
-            let index = 0;
-            while (true) {
-                if (exponentNumber === 0) {
-                    values[index].push(1);
-                } else if (counter === 1) {
-                    const resultFormated = modularArithmeticAlgorithm.calculate(
-                        moduleNumber,
-                        baseNumber
-                    );
+            while(counter <= exponentNumber) {
+                const result = baseNumber * loopingValues[loopingValues.length - 1]
+                const resultTranslated = modularArithmeticAlgorithm.calculate(moduleNumber, result)
 
-                    values[index].push(resultFormated);
-                } else if (index === 0) {
-                    const idxLastArray = values.length - 1;
-                    const currentPostElement = values[index].length - 1;
+                loopingValues.push(resultTranslated)
 
-                    const resultFormatted = modularArithmeticAlgorithm.calculate(
-                        moduleNumber,
-                        values[0][0] * values[idxLastArray][currentPostElement]
-                    );
-
-                    values[index].push(resultFormatted);
-                } else {
-                    const previousArray = index - 1;
-                    const currentPostElement = values[index].length;
-
-                    const resultFormatted = modularArithmeticAlgorithm.calculate(
-                        moduleNumber,
-                        values[0][0] * values[previousArray][currentPostElement]
-                    );
-
-                    values[index].push(resultFormatted);
+                if (resultTranslated === 0) {
+                    reasonBreak = ReasonsBreakLooping.ZERO_FOUND
+                    break
                 }
 
-                counter++;
+                if (resultTranslated === 1) {
+                    reasonBreak = ReasonsBreakLooping.ONE_FOUND
+                    break
+                }
 
-                if (counter > exponentNumber) break;
-
-                index++;
-
-                if (index === moduleNumber) index = 0;
+                counter++
             }
 
-            return this.getLastInsertInTheValues(values);
+            switch (reasonBreak) {
+                case ReasonsBreakLooping.EXPOENT_ACHIEVED: {
+                    return loopingValues.pop() ?? 1
+                }
+                case ReasonsBreakLooping.ZERO_FOUND: {
+                    return 0
+                }
+                case ReasonsBreakLooping.ONE_FOUND: {
+                    loopingValues.pop()
+                    const loopsQuantity = Math.floor(exponentNumber/loopingValues.length)
+                    const indexResult = exponentNumber - (loopsQuantity * loopingValues.length)
+                    return loopingValues[indexResult]
+                }
+            }
         } catch (erro) {
             throw new Error((erro as any).message);
         }

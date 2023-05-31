@@ -44,10 +44,7 @@ export class Encryption {
 
         const encodedBlocks = blocks.map(block => {
             const blockEncoded = modularPotentialArithmetic.calculate(block, e, n)
-
-            if (blockEncoded < 0) return blockEncoded + n
-
-            return blockEncoded
+            return (blockEncoded < 0) ? blockEncoded + n : blockEncoded;
         })
 
         return encodedBlocks

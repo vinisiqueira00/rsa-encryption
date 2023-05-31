@@ -39,48 +39,22 @@ export class Decryption {
         const phi = this.calculatePhi(n)
         const e = this.calculateE(n)
 
-        console.log('e', e)
-
         const modularDivisionArithmetic = new ModularDivisionArithmeticAlgorithm()
         const inverseE = modularDivisionArithmetic.getInverse(e, phi)
 
         const modularPotentialArithmetic = new ModularPotentialArithmeticAlgorithm()
         const blocksDecoded = blocksEncoded.map(blockEncoded => {
-            const blockDecoded = modularPotentialArithmetic.calculate(blockEncoded, inverseE, n)
-
-            if (blockDecoded < 0) return blockDecoded + n
-
-            return blockDecoded
+            const blockDecoded = modularPotentialArithmetic.calculate(blockEncoded, inverseE, n);
+            return (blockDecoded < 0) ? blockDecoded + n : blockDecoded;
         })
 
-        const digitText = blocksDecoded.join('')
+        const textDecoded = blocksDecoded.join('')
 
+        const charCodeList = textDecoded.match(/.{1,3}/g) || [];
 
-        const result: string[] = [];
+        const message = charCodeList.map(charCode => Helpers.codeToChar(parseInt(charCode))).join('')
 
-        for (let i = 0; i < digitText.length; i += 3) {
-            const threeChars = digitText.substr(i, 3);
-            result.push(threeChars);
-        }
-
-        const text = result.map(charCode => Helpers.codeToChar(parseInt(charCode)))
-
-        return text.join('')
-
-        // const breakMessageIntoBlocks = new BreakMessageIntoBlocks();
-        // const blocks = breakMessageIntoBlocks.encode(text, n);
-
-        // const modularPotentialArithmetic = new ModularPotentialArithmeticAlgorithm()
-
-        // const encodedBlocks = blocks.map(block => {
-        //     const blockEncoded = modularPotentialArithmetic.calculate(block, e, n)
-
-        //     if (blockEncoded < 0) return blockEncoded + n
-
-        //     return blockEncoded
-        // })
-
-        // return encodedBlocks
+        return message
     }
 }
 
