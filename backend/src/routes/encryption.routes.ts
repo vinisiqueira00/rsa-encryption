@@ -18,7 +18,7 @@ encryptionRouter.get("/", (request: CustomRequest, response: Response) => {
         const result = encryption.encode(body.n, body.message)
 
         return response.json({ response: result })
-    } catch (err) {
-        return response.status(400).json({ error: (err as any).message })
+    } catch (error) {
+        return response.status(400).json({ error: (error as Error).message })
     }
 })

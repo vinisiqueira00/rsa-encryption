@@ -1,12 +1,14 @@
 export class EuclideanAlgorithm {
+    isValid(number: number, message: string) {
+        if (!Number.isInteger(number)) {
+            throw new Error(message)
+        }
+    }
+
     calculate(firstNumber: number, secondNumber: number) {
         try {
-            if (
-                !Number.isInteger(firstNumber) ||
-                !Number.isInteger(secondNumber)
-            ) {
-                throw new Error("Non-integer parameter(s)")
-            }
+            this.isValid(firstNumber, 'Non-integer "firstNumber" parameter')
+            this.isValid(secondNumber, 'Non-integer "secondNumber" parameter')
 
             const smallerNumber = Math.min(firstNumber, secondNumber)
             const higherNumber = Math.max(firstNumber, secondNumber)
@@ -26,7 +28,7 @@ export class EuclideanAlgorithm {
 
             return window.firstField
         } catch (error) {
-            throw new Error((error as any).message)
+            throw new Error((error as Error).message)
         }
     }
 }

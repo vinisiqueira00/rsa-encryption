@@ -4,8 +4,8 @@ export abstract class Helpers {
             if (character.length !== 1) throw new Error("Non-char parameter")
 
             return parseInt(character)
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
@@ -16,8 +16,8 @@ export abstract class Helpers {
             }
 
             return integer.toString()
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
@@ -28,32 +28,32 @@ export abstract class Helpers {
             }
 
             return parseInt(string)
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
     static intToString(integer: number) {
         try {
             return integer.toString()
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
     static charToCode(character: string) {
         try {
             return character.charCodeAt(0) + 100
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
     static codeToChar(code: number) {
         try {
             return String.fromCharCode(code - 100)
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 }

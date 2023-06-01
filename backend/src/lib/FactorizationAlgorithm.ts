@@ -57,8 +57,8 @@ export class FactorizationAlgorithm {
             })
 
             return newValues
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 }

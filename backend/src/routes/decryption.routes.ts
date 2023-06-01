@@ -18,7 +18,7 @@ decryptionRouter.get("/", (request: CustomRequest, response: Response) => {
         const result = decryption.decode(body.n, body.blocksEncoded)
 
         return response.json({ response: result })
-    } catch (err) {
-        return response.status(400).json({ error: (err as any).message })
+    } catch (error) {
+        return response.status(400).json({ error: (error as Error).message })
     }
 })

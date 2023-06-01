@@ -17,8 +17,8 @@ export class ModularDivisionArithmeticAlgorithm {
             }
 
             return 0
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 
@@ -38,8 +38,8 @@ export class ModularDivisionArithmeticAlgorithm {
             )
 
             return response
-        } catch (erro) {
-            throw new Error((erro as any).message)
+        } catch (error) {
+            throw new Error((error as Error).message)
         }
     }
 }
