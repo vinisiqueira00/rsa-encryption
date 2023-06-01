@@ -1,20 +1,20 @@
-import { Helpers } from "../helpers/Helpers";
+import { Helpers } from "../helpers/Helpers"
 
 type ObjectValidation = {
-    value: number;
-    isValid: boolean;
-};
+    value: number
+    isValid: boolean
+}
 
 export class BreakMessageIntoBlocks {
     textToMessage(text: string) {
-        return text.split("").map((textChar) => Helpers.charToCode(textChar)).join("");
+        return text.split("").map((textChar) => Helpers.charToCode(textChar)).join("")
     }
 
     buildBlock(message: string, n: number) {
-        const numberUnderConstruction: ObjectValidation[] = [];
-        const nextDigit: ObjectValidation[] = [];
+        const numberUnderConstruction: ObjectValidation[] = []
+        const nextDigit: ObjectValidation[] = []
 
-        let index = 0;
+        let index = 0
         while (true) {
             const newNumberUnderConstruction =
                 index === 0
@@ -23,88 +23,88 @@ export class BreakMessageIntoBlocks {
                           `${numberUnderConstruction[index - 1].value}${
                               nextDigit[index - 1].value
                           }`
-                      );
+                      )
 
             numberUnderConstruction.push({
                 value: newNumberUnderConstruction,
                 isValid: newNumberUnderConstruction < n,
-            });
+            })
 
             if (!message[index + 1]) {
                 nextDigit.push({
                     value: -1,
                     isValid: true,
-                });
+                })
 
-                break;
+                break
             }
 
             nextDigit.push({
                 value: parseInt(message[index + 1]),
                 isValid: parseInt(message[index + 1]) !== 0,
-            });
+            })
 
             if (newNumberUnderConstruction >= n) {
-                break;
+                break
             }
 
-            index++;
+            index++
         }
 
         const buildedBlock = this.getBuildedBlock(
             numberUnderConstruction,
             nextDigit
-        );
+        )
 
         return {
             buildedBlock,
             messageWithoutBuildingBlock: message.substring(
                 buildedBlock.toString().length
             ),
-        };
+        }
     }
 
     getBuildedBlock(
         numberConstruction: ObjectValidation[],
         nextDigit: ObjectValidation[]
     ) {
-        const reverseNumberConstruction = numberConstruction.slice(0).reverse();
-        const reverseNextDigit = nextDigit.slice(0).reverse();
+        const reverseNumberConstruction = numberConstruction.slice(0).reverse()
+        const reverseNextDigit = nextDigit.slice(0).reverse()
 
-        let response = 0;
+        let response = 0
 
         for (let index = 0; index < reverseNextDigit.length; index++) {
             if (
                 reverseNumberConstruction[index].isValid &&
                 reverseNextDigit[index].isValid
             ) {
-                response = reverseNumberConstruction[index].value;
-                break;
+                response = reverseNumberConstruction[index].value
+                break
             }
         }
 
-        return response;
+        return response
     }
 
     encode(text: string, n: number) {
         try {
-            const message = this.textToMessage(text);
+            const message = this.textToMessage(text)
 
-            const blocks = [];
-            let newMessage = message;
+            const blocks = []
+            let newMessage = message
 
             while (true) {
-                const result = this.buildBlock(newMessage, n);
+                const result = this.buildBlock(newMessage, n)
 
-                blocks.push(result.buildedBlock);
-                newMessage = result.messageWithoutBuildingBlock;
+                blocks.push(result.buildedBlock)
+                newMessage = result.messageWithoutBuildingBlock
 
-                if (newMessage.length === 0) break;
+                if (newMessage.length === 0) break
             }
 
-            return blocks;
+            return blocks
         } catch (erro) {
-            throw new Error((erro as any).message);
+            throw new Error((erro as any).message)
         }
     }
 }

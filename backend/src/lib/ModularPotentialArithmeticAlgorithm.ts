@@ -1,4 +1,4 @@
-import { ModularArithmeticAlgorithm } from "./ModularArithmeticAlgorithm";
+import { ModularArithmeticAlgorithm } from "./ModularArithmeticAlgorithm"
 
 enum ReasonsBreakLooping {
     EXPOENT_ACHIEVED="EXPOENT ACHIEVED",
@@ -25,8 +25,8 @@ export class ModularPotentialArithmeticAlgorithm {
 
             const loopingValues: number[] = [1]
 
-            let reasonBreak: ReasonsBreakLooping = ReasonsBreakLooping.EXPOENT_ACHIEVED
             let counter = 1
+            let reasonBreak: ReasonsBreakLooping = ReasonsBreakLooping.EXPOENT_ACHIEVED
 
             while(counter <= exponentNumber) {
                 const result = baseNumber * loopingValues[loopingValues.length - 1]
@@ -62,7 +62,7 @@ export class ModularPotentialArithmeticAlgorithm {
                 }
             }
         } catch (erro) {
-            throw new Error((erro as any).message);
+            throw new Error((erro as any).message)
         }
     }
 }

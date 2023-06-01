@@ -1,64 +1,64 @@
 interface IValue {
-    factor: number;
-    multiplicity: number;
+    factor: number
+    multiplicity: number
 }
 
 export class FactorizationAlgorithm {
-    private initialFactor = 2;
+    private initialFactor = 2
 
     countRepetitions(list: Array<number>, number: number) {
-        let count = 0;
+        let count = 0
 
         list.forEach((value) => {
-            if (value === number) count++;
-        });
+            if (value === number) count++
+        })
 
-        return count;
+        return count
     }
 
     calculate(number: number) {
         try {
             if (!Number.isInteger(number)) {
-                throw new Error("Non-integer parameter");
+                throw new Error("Non-integer parameter")
             }
 
-            const values: Array<number> = [];
+            const values: Array<number> = []
 
-            let factor = this.initialFactor;
-            let numberAnalyzed = number;
+            let factor = this.initialFactor
+            let numberAnalyzed = number
 
             while (true) {
                 if (numberAnalyzed % factor === 0) {
-                    values.push(factor);
+                    values.push(factor)
 
-                    numberAnalyzed = numberAnalyzed / factor;
-                    factor = this.initialFactor;
+                    numberAnalyzed = numberAnalyzed / factor
+                    factor = this.initialFactor
 
-                    continue;
+                    continue
                 }
 
-                factor++;
+                factor++
 
                 if (factor > Math.sqrt(numberAnalyzed)) {
-                    values.push(numberAnalyzed);
-                    break;
+                    values.push(numberAnalyzed)
+                    break
                 }
             }
 
             const uniqueValues = values.filter(function (este, i) {
-                return values.indexOf(este) === i;
-            });
+                return values.indexOf(este) === i
+            })
 
             const newValues: Array<IValue> = uniqueValues.map((value) => {
                 return {
                     factor: value,
                     multiplicity: this.countRepetitions(values, value),
-                } as unknown as IValue;
-            });
+                } as unknown as IValue
+            })
 
-            return newValues;
+            return newValues
         } catch (erro) {
-            throw new Error((erro as any).message);
+            throw new Error((erro as any).message)
         }
     }
 }
