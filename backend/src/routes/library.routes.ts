@@ -1,11 +1,10 @@
 import { Request, Response, Router } from "express"
 
 import { Helpers } from "../helpers/Helpers"
-
 import { BreakMessageIntoBlocks } from "../lib/BreakMessageIntoBlocks"
 import { EratosthenesSieveAlgorithm } from "../lib/EratosthenesSieveAlgorithm"
-import { EuclideanAlgorithm } from "../lib/EuclideanAlgorithm"
-import { ExtendedEuclideanAlgorithm } from "../lib/ExtendedEuclideanAlgorithm"
+import { EuclideanAlgorithm, EuclideanAlgorithmProps } from "../lib/EuclideanAlgorithm"
+import { ExtendedEuclideanAlgorithm, ExtendedEuclideanAlgorithmProps } from "../lib/ExtendedEuclideanAlgorithm"
 import { FactorizationAlgorithm } from "../lib/FactorizationAlgorithm"
 import { FermatAlgorithm } from "../lib/FermatAlgorithm"
 import { ModularArithmeticAlgorithm } from "../lib/ModularArithmeticAlgorithm"
@@ -13,14 +12,8 @@ import { ModularDivisionArithmeticAlgorithm } from "../lib/ModularDivisionArithm
 import { ModularPotentialArithmeticAlgorithm } from "../lib/ModularPotentialArithmeticAlgorithm"
 
 interface RequestData {
-    euclideanAlgorithm: {
-        firstNumber: number
-        secondNumber: number
-    }
-    extendedEuclideanAlgorithm: {
-        firstNumber: number
-        secondNumber: number
-    }
+    euclideanAlgorithm: EuclideanAlgorithmProps
+    extendedEuclideanAlgorithm: ExtendedEuclideanAlgorithmProps
     factorizationAlgorithm: {
         number: number
     }
@@ -65,17 +58,17 @@ libraryRouter.get("/", (request: CustomRequest, response: Response) => {
 
         // Algoritmo euclidiano
         const euclideanAlgorithm = new EuclideanAlgorithm()
-        const euclideanValue = euclideanAlgorithm.calculate(
-            body.euclideanAlgorithm.firstNumber,
-            body.euclideanAlgorithm.secondNumber,
-        )
+        const euclideanValue = euclideanAlgorithm.calculate({
+            firstNumber: body.euclideanAlgorithm.firstNumber,
+            secondNumber: body.euclideanAlgorithm.secondNumber,
+        })
 
         // Algoritmo euclidiano extendido
         const extendedEuclideanAlgorithm = new ExtendedEuclideanAlgorithm()
-        const extendedEuclideanValue = extendedEuclideanAlgorithm.calculate(
-            body.extendedEuclideanAlgorithm.firstNumber,
-            body.extendedEuclideanAlgorithm.secondNumber,
-        )
+        const extendedEuclideanValue = extendedEuclideanAlgorithm.calculate({
+            firstNumber: body.extendedEuclideanAlgorithm.firstNumber,
+            secondNumber: body.extendedEuclideanAlgorithm.secondNumber,
+        })
 
         // Algoritmo de fatorização
         const factorizationAlgorithm = new FactorizationAlgorithm()

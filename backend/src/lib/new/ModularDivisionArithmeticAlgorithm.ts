@@ -2,30 +2,29 @@ import { ExtendedEuclideanAlgorithm } from "./ExtendedEuclideanAlgorithm"
 import { ModularArithmeticAlgorithm } from "./ModularArithmeticAlgorithm"
 
 export class ModularDivisionArithmeticAlgorithm {
-    getInverse(number: number, moduleNumber: number): number {
+    getInverse(number: bigint, moduleNumber: bigint): bigint {
         try {
             const extendedEuclidean = new ExtendedEuclideanAlgorithm()
-
             const result = extendedEuclidean.calculate({ firstNumber: moduleNumber, secondNumber: number})
 
-            if (result.greatestCommonDivisor === 1) {
-                if (result.beta < 0) {
+            if (result.greatestCommonDivisor === 1n) {
+                if (result.beta < 0n) {
                     return result.beta + moduleNumber
                 }
 
                 return result.beta
             }
 
-            return 0
+            return 0n
         } catch (error) {
             throw new Error((error as Error).message)
         }
     }
 
     calculate(
-        firstNumber: number,
-        secondNumber: number,
-        moduleNumber: number
+        firstNumber: bigint,
+        secondNumber: bigint,
+        moduleNumber: bigint
     ): any {
         try {
             const inverseSecondNumber = this.getInverse(secondNumber, moduleNumber)

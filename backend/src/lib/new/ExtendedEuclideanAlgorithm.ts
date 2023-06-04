@@ -1,36 +1,48 @@
 export interface ExtendedEuclideanAlgorithmProps {
-    firstNumber: number
-    secondNumber: number
+    firstNumber: bigint
+    secondNumber: bigint
 }
 
 export class ExtendedEuclideanAlgorithm {
-    private isValid(number: number, message: string): void {
-        if (!Number.isInteger(number)) {
+    private isValid(number: bigint, message: string): void {
+        if (!number) {
             throw new Error(message)
         }
     }
 
+    private getSmallerNumber(firstNumber: bigint, secondNumber: bigint) {
+        if (firstNumber < secondNumber) return firstNumber
+
+        return secondNumber
+    }
+
+    private getHigherNumber(firstNumber: bigint, secondNumber: bigint) {
+        if (firstNumber > secondNumber) return firstNumber
+
+        return secondNumber
+    }
+
     public calculate({ firstNumber, secondNumber }: ExtendedEuclideanAlgorithmProps): {
-        greatestCommonDivisor: number
-        alpha: number
-        beta: number
+        greatestCommonDivisor: bigint
+        alpha: bigint
+        beta: bigint
     } {
         try {
             this.isValid(firstNumber, '[ExtendedEuclideanAlgorithm] Parameter "firstNumber" is not an integer')
             this.isValid(secondNumber, '[ExtendedEuclideanAlgorithm] Parameter "secondNumber" is not an integer')
 
             if (firstNumber === secondNumber) {
-                return { greatestCommonDivisor: firstNumber, alpha: 2, beta: -1 }
+                return { greatestCommonDivisor: firstNumber, alpha: 2n, beta: -1n }
             }
 
-            const smallerNumber = Math.min(firstNumber, secondNumber)
-            const higherNumber = Math.max(firstNumber, secondNumber)
+            const smallerNumber = this.getSmallerNumber(firstNumber, secondNumber)
+            const higherNumber = this.getHigherNumber(firstNumber, secondNumber)
 
-            if (higherNumber % smallerNumber === 0) {
-                const quotient = Math.trunc(higherNumber / smallerNumber)
+            if (higherNumber % smallerNumber === 0n) {
+                const quotient = higherNumber / smallerNumber
 
-                const alpha = higherNumber === firstNumber ? 1 : 1 - quotient
-                const beta = higherNumber === firstNumber ? 1 - quotient : 1
+                const alpha = higherNumber === firstNumber ? 1n : 1n - quotient
+                const beta = higherNumber === firstNumber ? 1n - quotient : 1n
 
                 return {
                     greatestCommonDivisor: smallerNumber,
@@ -40,17 +52,17 @@ export class ExtendedEuclideanAlgorithm {
             }
 
             const values: {
-                rest: number
-                quotient: number | null
-                alpha: number
-                beta: number
+                rest: bigint
+                quotient: bigint | null
+                alpha: bigint
+                beta: bigint
             }[] = [
-                { rest: higherNumber, quotient: null, alpha: 1, beta: 0 },
-                { rest: smallerNumber, quotient: null, alpha: 0, beta: 1 },
+                { rest: higherNumber, quotient: null, alpha: 1n, beta: 0n },
+                { rest: smallerNumber, quotient: null, alpha: 0n, beta: 1n },
             ]
 
-            while (values[1].rest !== 0) {
-                const newQuotient = Math.trunc(values[0].rest / values[1].rest)
+            while (values[1].rest !== 0n) {
+                const newQuotient = values[0].rest / values[1].rest
 
                 const newRest = values[0].rest % values[1].rest
 
