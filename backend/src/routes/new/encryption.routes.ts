@@ -1,26 +1,47 @@
-import { Request, Response, Router } from "express"
-import { Encryption } from "../../algorithms/new/Encryption"
+import { Request, Response, Router } from "express";
+import fs from 'fs';
+import multer from 'multer';
+import { Readable } from 'stream';
+
+import { multerConfig } from "../../config/multer";
+
+import { Encryption } from "../../algorithms/new/Encryption";
 
 interface BodyRequest {
-    message: string
     publicKey: string
 }
 
 type CustomRequest = Request<{}, {}, BodyRequest>
 
+const upload = multer(multerConfig)
+
 export const newEncryptionRouter = Router()
 
-newEncryptionRouter.get("/", (request: CustomRequest, response: Response) => {
+newEncryptionRouter.post("/", upload.single('file'), (request: CustomRequest, response: Response) => {
     try {
-        const body = request.body
+        const file = request.file
+        const { publicKey } = request.body
 
-        const encryption = new Encryption()
-        const result = encryption.encode({
-            message: body.message,
-            publicKey: body.publicKey,
+        if (!file) throw new Error('Arquivo não enviado.')
+
+        fs.readFile(file.path, 'utf8', (err, contentFile) => {
+            if (err) throw new Error('Erro ao ler o arquivo.')
+
+            const encryption = new Encryption()
+            const encodedBlocks = encryption.encode({
+                message: contentFile,
+                publicKey: publicKey,
+            })
+
+            const readableStream = new Readable();
+            readableStream.push(encodedBlocks.join(';'));
+            readableStream.push(null);
+
+            response.setHeader('Content-Type', 'text/plain');
+            response.setHeader('Content-Disposition', 'attachment; filename="arquivo.txt"');
+
+            readableStream.pipe(response);
         })
-
-        return response.json({ response: result })
     } catch (error) {
         return response.status(400).json({ error: (error as Error).message })
     }

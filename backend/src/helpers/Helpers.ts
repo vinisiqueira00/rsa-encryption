@@ -41,17 +41,18 @@ export abstract class Helpers {
         }
     }
 
-    static charToCode(character: string) {
+    static charToCode(character: string, size: number) {
         try {
-            return character.charCodeAt(0) + 100
+
+            return character.charCodeAt(0) + parseInt(`1${'0'.repeat(size - 1)}`)
         } catch (error) {
             throw new Error((error as Error).message)
         }
     }
 
-    static codeToChar(code: number) {
+    static codeToChar(code: number, size: number) {
         try {
-            return String.fromCharCode(code - 100)
+            return String.fromCharCode(code - parseInt(`1${'0'.repeat(size - 1)}`))
         } catch (error) {
             throw new Error((error as Error).message)
         }

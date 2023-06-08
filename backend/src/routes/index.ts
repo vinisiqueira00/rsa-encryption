@@ -1,3 +1,4 @@
+import cors from 'cors'
 import { Router } from "express"
 
 import { decryptionRouter } from "./decryption.routes"
@@ -7,8 +8,11 @@ import { newDecryptionRouter } from "./new/decryption.routes"
 import { newEncryptionRouter } from "./new/encryption.routes"
 import { newKeysGenerationRouter } from "./new/keys-generation.routes"
 
-
 export const router = Router()
+
+router.use(cors({
+    origin: 'http://localhost:3000'
+}))
 
 router.use("/encryption", encryptionRouter)
 router.use("/decryption", decryptionRouter)

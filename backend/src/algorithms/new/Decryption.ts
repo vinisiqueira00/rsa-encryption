@@ -2,7 +2,9 @@ import { Helpers } from "../../helpers/Helpers"
 import { ModularPotentialArithmeticAlgorithm } from "../../lib/new/ModularPotentialArithmeticAlgorithm"
 
 export class Decryption {
-    decipherPrivateKey(privateKey: string) {
+    public static ALPHABET_LENGTH = 8
+
+    private decipherPrivateKey(privateKey: string) {
         let result = privateKey
 
         result = Buffer.from(result, 'base64').toString()
@@ -15,31 +17,45 @@ export class Decryption {
         }
     }
 
-    decode({blocksEncoded, privateKey}: {blocksEncoded: string[], privateKey: string}) {
-        const { p, q, d } = this.decipherPrivateKey(privateKey)
-
-        const n = p * q
-
+    private decodeBlocks(encodedBlocks: string[], n: bigint, d: bigint): string[] {
         const modularPotentialArithmetic = new ModularPotentialArithmeticAlgorithm()
-        const blocksDecoded = blocksEncoded.map(blockEncoded => {
-            const blockDecoded = modularPotentialArithmetic.calculate(BigInt(blockEncoded), d, n)
-            return (blockDecoded < 0) ? blockDecoded + n : blockDecoded
+
+        const decodedBlocks = encodedBlocks.map(encodedBlock => {
+            const blockDecoded = modularPotentialArithmetic.calculate(BigInt(encodedBlock), d, n)
+            return (blockDecoded < 0n) ? (blockDecoded + n).toString() : blockDecoded.toString()
         })
 
-        const textDecoded = blocksDecoded.join('')
+        return decodedBlocks
+    }
 
-        const charCodeList = textDecoded.match(/.{1,3}/g) || []
+    private generateMessage(decodedBlocks: string[]) {
+        const decodedText = decodedBlocks.join('')
 
-        const message = charCodeList.map(charCode => Helpers.codeToChar(parseInt(charCode))).join('')
+        const regex = new RegExp(`.{1,${Decryption.ALPHABET_LENGTH}}`, 'g')
+        const charCodeList = decodedText.match(regex) || []
 
-        console.log("[Decryption] P: ", p)
-        console.log("[Decryption] Q: ", q)
-        console.log("[Decryption] N: ", n)
-        console.log("[Decryption] D: ", d)
-        console.log("[Decryption] blocos codificados: ", blocksEncoded)
-        console.log("[Decryption] blocos: ", blocksDecoded)
-        console.log("[Decryption] texto em dígitos: ", textDecoded)
-        console.log("[Decryption] texto: ", message)
+        const message = charCodeList.map(charCode => {
+            return Helpers.codeToChar(parseInt(charCode), Decryption.ALPHABET_LENGTH)
+        }).join('')
+
+        return message
+    }
+
+    public decode({encodedBlocks, privateKey}: {encodedBlocks: string[], privateKey: string}) {
+        const { p, q, d } = this.decipherPrivateKey(privateKey)
+        const n = p * q
+
+        const decodedBlocks = this.decodeBlocks(encodedBlocks, n, d)
+
+        const message = this.generateMessage(decodedBlocks)
+
+        // console.log("[Decryption] P: ", p)
+        // console.log("[Decryption] Q: ", q)
+        // console.log("[Decryption] N: ", n)
+        // console.log("[Decryption] D: ", d)
+        // console.log("[Decryption] blocos codificados: ", encodedBlocks)
+        // console.log("[Decryption] blocos: ", decodedBlocks)
+        // console.log("[Decryption] texto: ", message)
 
         return message
     }

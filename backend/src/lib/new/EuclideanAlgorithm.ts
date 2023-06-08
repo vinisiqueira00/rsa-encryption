@@ -4,19 +4,13 @@ export interface EuclideanAlgorithmProps {
 }
 
 export class EuclideanAlgorithm {
-    private isValid(number: bigint, message: string): void {
-        if (!number) {
-            throw new Error(message)
-        }
-    }
-
-    private getSmallerNumber(firstNumber: bigint, secondNumber: bigint) {
+    private getSmallerNumber(firstNumber: bigint, secondNumber: bigint): bigint {
         if (firstNumber < secondNumber) return firstNumber
 
         return secondNumber
     }
 
-    private getHigherNumber(firstNumber: bigint, secondNumber: bigint) {
+    private getHigherNumber(firstNumber: bigint, secondNumber: bigint): bigint {
         if (firstNumber > secondNumber) return firstNumber
 
         return secondNumber
@@ -24,9 +18,6 @@ export class EuclideanAlgorithm {
 
     public calculate({ firstNumber, secondNumber }: EuclideanAlgorithmProps): bigint {
         try {
-            this.isValid(firstNumber, '[EuclideanAlgorithm] Parameter "firstNumber" is not an integer')
-            this.isValid(secondNumber, '[EuclideanAlgorithm] Parameter "secondNumber" is not an integer')
-
             const smallerNumber = this.getSmallerNumber(firstNumber, secondNumber)
             const higherNumber = this.getHigherNumber(firstNumber, secondNumber)
 

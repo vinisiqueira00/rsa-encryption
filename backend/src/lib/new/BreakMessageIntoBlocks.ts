@@ -6,105 +6,64 @@ type ObjectValidation = {
 }
 
 export class BreakMessageIntoBlocks {
-    textToMessage(text: string) {
-        return text.split("").map((textChar) => Helpers.charToCode(textChar)).join("")
+    private blocks: string[] = []
+    private message: string = ""
+
+    private textToMessage(text: string, size: number): string {
+        return text.split("").map((textChar) => Helpers.charToCode(textChar, size)).join("")
     }
 
-    buildBlock(message: string, n: bigint) {
-        const numberUnderConstruction: ObjectValidation[] = []
-        const nextDigit: ObjectValidation[] = []
-
-        let index = 0
-        while (true) {
-            const newNumberUnderConstruction =
-                index === 0
-                    ? BigInt(message[index])
-                    : BigInt(
-                          `${numberUnderConstruction[index - 1].value}${
-                              nextDigit[index - 1].value
-                          }`
-                      )
-
-            numberUnderConstruction.push({
-                value: newNumberUnderConstruction,
-                isValid: newNumberUnderConstruction < n,
-            })
-
-            if (!message[index + 1]) {
-                nextDigit.push({
-                    value: -1n,
-                    isValid: true,
-                })
-
-                break
-            }
-
-            nextDigit.push({
-                value: BigInt(message[index + 1]),
-                isValid: parseInt(message[index + 1]) !== 0,
-            })
-
-            if (newNumberUnderConstruction >= n) {
-                break
-            }
-
-            index++
-        }
-
-        const buildedBlock = this.getBuildedBlock(
-            numberUnderConstruction,
-            nextDigit
-        )
-
-        return {
-            buildedBlock,
-            messageWithoutBuildingBlock: message.substring(
-                buildedBlock.toString().length
-            ),
-        }
+    private resetMessage(blockLength: number) {
+        this.message = this.message.substring(blockLength)
     }
 
-    getBuildedBlock(
-        numberConstruction: ObjectValidation[],
-        nextDigit: ObjectValidation[]
-    ) {
-        const reverseNumberConstruction = numberConstruction.slice(0).reverse()
-        const reverseNextDigit = nextDigit.slice(0).reverse()
+    private generateBlock(reviews: { value: string, isValid: boolean }[]) {
+        const validReviews = reviews.filter(review => review.isValid)
+        const lastValidReview = validReviews[validReviews.length - 1]
+        const block = lastValidReview.value
 
-        let response = 0n
+        this.blocks.push(block)
 
-        for (let index = 0; index < reverseNextDigit.length; index++) {
-            if (
-                reverseNumberConstruction[index].isValid &&
-                reverseNextDigit[index].isValid
-            ) {
-                response = reverseNumberConstruction[index].value
-                break
-            }
-        }
-
-        return response
+        this.resetMessage(block.length)
     }
 
-    encode(text: string, n: bigint) {
+    public break(text: string, n: bigint, size: number): string[] {
         try {
-            const message = this.textToMessage(text)
+            this.message = this.textToMessage(text, size)
 
-            console.log('[Encryption] message: ', message)
+            let reviews: { value: string, isValid: boolean }[] = []
 
-            const blocks = []
-            let newMessage = message
+            let index = 1
+            while(index <= this.message.length) {
+                const inReview = this.message.substring(0, index)
+                const nextValue = this.message[index]
 
-            while (true) {
-                const result = this.buildBlock(newMessage, n)
+                if (BigInt(inReview) >= n) {
+                    reviews.push({ value: inReview, isValid: false })
 
-                blocks.push(result.buildedBlock)
-                newMessage = result.messageWithoutBuildingBlock
+                    this.generateBlock(reviews)
 
-                if (newMessage.length === 0) break
+                    index = 1
+                    reviews = []
+
+                    continue
+                }
+                else if (!nextValue) {
+                    reviews.push({ value: inReview, isValid: true })
+
+                    this.generateBlock(reviews)
+                }
+                else if (BigInt(nextValue) === 0n) {
+                    reviews.push({ value: inReview, isValid: false })
+                }
+                else {
+                    reviews.push({ value: inReview, isValid: true })
+                }
+
+                index++
             }
 
-            return blocks
+            return this.blocks
         } catch (error) {
             throw new Error((error as Error).message)
         }

@@ -3,36 +3,40 @@ export interface ExtendedEuclideanAlgorithmProps {
     secondNumber: bigint
 }
 
-export class ExtendedEuclideanAlgorithm {
-    private isValid(number: bigint, message: string): void {
-        if (!number) {
-            throw new Error(message)
-        }
-    }
+export interface ExtendedEuclideanAlgorithmResponse {
+    gcd: bigint
+    alpha: bigint
+    beta: bigint
+}
 
-    private getSmallerNumber(firstNumber: bigint, secondNumber: bigint) {
+interface ValuesType {
+    rest: bigint
+    quotient: bigint | null
+    alpha: bigint
+    beta: bigint
+}
+
+export class ExtendedEuclideanAlgorithm {
+    private getSmallerNumber(firstNumber: bigint, secondNumber: bigint): bigint {
         if (firstNumber < secondNumber) return firstNumber
 
         return secondNumber
     }
 
-    private getHigherNumber(firstNumber: bigint, secondNumber: bigint) {
+    private getHigherNumber(firstNumber: bigint, secondNumber: bigint): bigint {
         if (firstNumber > secondNumber) return firstNumber
 
         return secondNumber
     }
 
-    public calculate({ firstNumber, secondNumber }: ExtendedEuclideanAlgorithmProps): {
-        greatestCommonDivisor: bigint
-        alpha: bigint
-        beta: bigint
-    } {
+    public calculate({ firstNumber, secondNumber }: ExtendedEuclideanAlgorithmProps): ExtendedEuclideanAlgorithmResponse {
         try {
-            this.isValid(firstNumber, '[ExtendedEuclideanAlgorithm] Parameter "firstNumber" is not an integer')
-            this.isValid(secondNumber, '[ExtendedEuclideanAlgorithm] Parameter "secondNumber" is not an integer')
-
             if (firstNumber === secondNumber) {
-                return { greatestCommonDivisor: firstNumber, alpha: 2n, beta: -1n }
+                return {
+                    gcd: firstNumber,
+                    alpha: 2n,
+                    beta: -1n,
+                }
             }
 
             const smallerNumber = this.getSmallerNumber(firstNumber, secondNumber)
@@ -41,22 +45,14 @@ export class ExtendedEuclideanAlgorithm {
             if (higherNumber % smallerNumber === 0n) {
                 const quotient = higherNumber / smallerNumber
 
-                const alpha = higherNumber === firstNumber ? 1n : 1n - quotient
-                const beta = higherNumber === firstNumber ? 1n - quotient : 1n
-
                 return {
-                    greatestCommonDivisor: smallerNumber,
-                    alpha: alpha,
-                    beta: beta,
+                    gcd: smallerNumber,
+                    alpha: (higherNumber === firstNumber) ? (1n) : (1n - quotient),
+                    beta: (higherNumber === firstNumber) ? (1n - quotient) : (1n),
                 }
             }
 
-            const values: {
-                rest: bigint
-                quotient: bigint | null
-                alpha: bigint
-                beta: bigint
-            }[] = [
+            const values: ValuesType[] = [
                 { rest: higherNumber, quotient: null, alpha: 1n, beta: 0n },
                 { rest: smallerNumber, quotient: null, alpha: 0n, beta: 1n },
             ]
@@ -66,8 +62,7 @@ export class ExtendedEuclideanAlgorithm {
 
                 const newRest = values[0].rest % values[1].rest
 
-                const newAlpha =
-                    values[0].alpha - newQuotient * values[1].alpha
+                const newAlpha = values[0].alpha - newQuotient * values[1].alpha
 
                 const newBeta = values[0].beta - newQuotient * values[1].beta
 
@@ -80,15 +75,10 @@ export class ExtendedEuclideanAlgorithm {
                 }
             }
 
-            const alpha =
-                higherNumber === firstNumber ? values[0].alpha : values[0].beta
-            const beta =
-                higherNumber === firstNumber ? values[0].beta : values[0].alpha
-
             return {
-                greatestCommonDivisor: values[0].rest,
-                alpha: alpha,
-                beta: beta,
+                gcd: values[0].rest,
+                alpha: (higherNumber === firstNumber) ? values[0].alpha : values[0].beta,
+                beta: (higherNumber === firstNumber) ? values[0].beta : values[0].alpha,
             }
         } catch (error) {
             throw new Error((error as Error).message)

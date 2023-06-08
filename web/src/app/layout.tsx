@@ -1,7 +1,15 @@
+import { Fira_Code, Inter } from 'next/font/google'
 import './globals.css'
-import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--fira-code-font'
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--inter-font'
+})
 
 export const metadata = {
   title: 'Create Next App',
@@ -14,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${firaCode.variable} ${inter.variable} bg-space-cadet`}>
+      <body className='bg-none bg-space-cadet'>{children}</body>
     </html>
   )
 }

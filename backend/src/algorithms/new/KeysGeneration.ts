@@ -1,17 +1,23 @@
 import { prime } from 'bigint-crypto-utils'
 
 import { EuclideanAlgorithm } from '../../lib/new/EuclideanAlgorithm'
-import { ModularDivisionArithmeticAlgorithm } from "../../lib/new/ModularDivisionArithmeticAlgorithm"
+import { ModularInverseArithmeticAlgorithm } from "../../lib/new/ModularInverseArithmeticAlgorithm"
 
 export class KeysGeneration {
-    calculatePhi(p: bigint, q: bigint) {
+    private static BIT_LENGTH = 2048
+
+    private async generatePrimesNumbers() {
+        return [await prime(KeysGeneration.BIT_LENGTH), await prime(KeysGeneration.BIT_LENGTH)]
+    }
+
+    private calculatePhi(p: bigint, q: bigint) {
         return (p - 1n) * (q - 1n)
     }
 
-    calculateE(phi: bigint) {
+    private calculateE(p: bigint, phi: bigint) {
         const euclideanAlgorithm = new EuclideanAlgorithm
 
-        for (let e = 3n; e < phi; e += 2n) {
+        for (let e = p; e < phi; e += 2n) {
             const gcd = euclideanAlgorithm.calculate({
                 firstNumber: e,
                 secondNumber: phi
@@ -21,14 +27,17 @@ export class KeysGeneration {
         }
     }
 
-    calculateD(e: bigint, phi: bigint) {
-        const modularDivisionArithmetic = new ModularDivisionArithmeticAlgorithm()
-        const inverseE = modularDivisionArithmetic.getInverse(e, phi)
+    private calculateD(e: bigint, phi: bigint) {
+        const modularInverseArithmeticAlgorithm = new ModularInverseArithmeticAlgorithm()
+        const d = modularInverseArithmeticAlgorithm.calculate({
+            number: e,
+            moduleNumber: phi,
+        })
 
-        return inverseE
+        return d
     }
 
-    cipherKey(privateKey: string): string {
+    private cipherKey(privateKey: string): string {
         let buffer = privateKey
 
         buffer = Buffer.from(buffer).toString('base64')
@@ -37,42 +46,30 @@ export class KeysGeneration {
         return buffer.toString()
     }
 
-    async generatePrimesNumbers() {
-        const bitLength = 2048
-        return [await prime(bitLength), await prime(bitLength)]
-    }
-
-    async generate() {
-        // Generate random P and Q values
+    public async generate() {
         const [ p, q ] = await this.generatePrimesNumbers()
 
-        // Calculate N value
         const n = p * q
 
-        // Calulate E value
         const phi = this.calculatePhi(p, q)
 
-        const e = this.calculateE(phi)
+        const e = this.calculateE(p, phi)
 
         if (!e) return
 
-        // Calulate D value
         const d = this.calculateD(e, phi)
 
         const keys = {
-            public: `${n.toString()}_${e.toString()}`,
-            private: `${p.toString()}_${q.toString()}_${d.toString()}`,
+            public: this.cipherKey(`${n.toString()}_${e.toString()}`),
+            private: this.cipherKey(`${p.toString()}_${q.toString()}_${d.toString()}`),
         }
 
-        keys.public = this.cipherKey(keys.public)
-        keys.private = this.cipherKey(keys.private)
-
-        console.log("[Keys] P: ", p)
-        console.log("[Keys] Q: ", q)
-        console.log("[Keys] N: ", n)
-        console.log("[Keys] E: ", e)
-        console.log("[Keys] Phi: ", phi)
-        console.log("[Keys] D: ", d)
+        // console.log("[Keys] P: ", p)
+        // console.log("[Keys] Q: ", q)
+        // console.log("[Keys] N: ", n)
+        // console.log("[Keys] E: ", e)
+        // console.log("[Keys] Phi: ", phi)
+        // console.log("[Keys] D: ", d)
 
         return {
             publicKey: keys.public,
